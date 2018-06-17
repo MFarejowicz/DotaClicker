@@ -13,6 +13,8 @@ import {
   TouchableHighlight,
   TouchableOpacity
 } from 'react-native';
+import Modal from "react-native-modal";
+import * as Animatable from 'react-native-animatable';
 import ProgressCircle from './Components/ProgressCircle.js';
 import Slider from './Components/Slider.js';
 var Sound = require('react-native-sound');
@@ -62,18 +64,22 @@ class MenuItem extends Component {
 
   render() {
     return (
-      <TouchableHighlight
+      <TouchableOpacity
         onPress={this.onPress}
-        underlayColor='#64a664'
+        activeOpacity={0.5}
         style={styles.menuItem}>
-        <Text style={styles.menuItemText}>
+        <Animatable.Text
+          animation="pulse"
+          easing="linear"
+          duration={3000}
+          iterationCount="infinite"
+          style={styles.menuItemText}>
           {this.props.title}
-        </Text>
-      </TouchableHighlight>
+        </Animatable.Text>
+      </TouchableOpacity>
     )
   }
 }
-// ^ For inner view? borderWidth: 2, borderColor: 'green'
 
 //NOTE: Anywhere there is textAlign: 'center', you can achieve the same effect
 //by wrapping it in a view and setting alignItems: 'center' for that view.
@@ -125,8 +131,12 @@ class Enemy extends Component {
         <TouchableOpacity
           onPress={this.handlePress}
           activeOpacity={0.5}
-          style={{alignSelf: 'center'}}>
-            <Image
+          style={{alignSelf: 'stretch', alignItems: 'center'}}>
+            <Animatable.Image
+              animation={"wobble"}
+              easing={"linear"}
+              duration={3000}
+              iterationCount={"infinite"}
               source={require('./assets/img/creep.png')}
               style={{width: 225, height: 240}}
               resizeMode={'stretch'}
@@ -136,7 +146,8 @@ class Enemy extends Component {
           <Text style={styles.enemyHPTag}>
             Enemy HP:
           </Text>
-          <Slider trackStyle={{height: 30}} style={{flex: 3}} disabled={true}
+          <Slider trackStyle={{height: 30, borderWidth: 1, borderColor: 'black'}}
+            style={{flex: 3}} disabled={true}
             maximumValue={this.props.maxHealth} value={this.props.health}
             minimumTrackTintColor={'#72130c'} thumbStyle={{width:0, height: 0}}
           />
@@ -151,40 +162,157 @@ class Enemy extends Component {
 
 
 class Spell extends Component {
+
+  constructor(props) {
+    super(props)
+    this.borderStyle = null;
+    if (this.props.order == 1) {
+      this.borderStyle = {
+        borderLeftWidth: 4,
+        borderTopWidth: 4,
+      }
+    } else if (this.props.order == 2) {
+      this.borderStyle = {
+        borderLeftWidth: 2,
+        borderTopWidth: 4,
+        borderRightWidth: 4,
+      }
+    } else if (this.props.order == 3) {
+      this.borderStyle = {
+        borderLeftWidth: 4,
+        borderTopWidth: 2,
+        borderBottomWidth: 4
+      }
+    } else if (this.props.order == 4) {
+      this.borderStyle = {
+        borderLeftWidth: 2,
+        borderRightWidth: 4,
+        borderTopWidth: 2,
+        borderBottomWidth: 4
+      }
+    }
+  }
+
   onPress = () => {
     console.log(this.props.title)
   }
 
   render() {
     return (
-      <View style={{flex:1}}>
-        <TouchableHighlight
+      <View style={[{borderColor: '#565d61'}, this.borderStyle]}>
+        <TouchableOpacity
           onPress={this.onPress}
-          underlayColor='#b63bbf'>
+          activeOpacity={0.5}
+          style={{backgroundColor: '#3d4042', width: 51, height: 42}}>
           <Text style={styles.spell}>
-            {this.props.title}
+            {this.props.order}
           </Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+}
+
+class SpellContainer extends Component {
+  render() {
+    return (
+      <View style={styles.spellContainer}>
+        <View>
+          <Text style={styles.spellsTitle}>Spells</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Spell order={1} />
+          <Spell order={2} />
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Spell order={3} />
+          <Spell order={4} />
+        </View>
       </View>
     )
   }
 }
 
 class Item extends Component {
+
+  constructor(props) {
+    super(props)
+    this.borderStyle = null;
+    if (this.props.order == 1) {
+      this.borderStyle = {
+        borderLeftWidth: 4,
+        borderTopWidth: 4,
+      }
+    } else if (this.props.order == 2) {
+      this.borderStyle = {
+        borderLeftWidth: 2,
+        borderTopWidth: 4,
+      }
+    } else if (this.props.order == 3) {
+      this.borderStyle = {
+        borderLeftWidth: 2,
+        borderTopWidth: 4,
+        borderRightWidth: 4
+      }
+    } else if (this.props.order == 4) {
+      this.borderStyle = {
+        borderLeftWidth: 4,
+        borderTopWidth: 2,
+        borderBottomWidth: 4
+      }
+    } else if (this.props.order == 5) {
+      this.borderStyle = {
+        borderLeftWidth: 2,
+        borderTopWidth: 2,
+        borderBottomWidth: 4
+      }
+    } else if (this.props.order == 6) {
+      this.borderStyle = {
+        borderLeftWidth: 2,
+        borderTopWidth: 2,
+        borderRightWidth: 4,
+        borderBottomWidth: 4
+      }
+    }
+  }
+
   onPress = () => {
     console.log(this.props.title)
   }
 
   render() {
     return (
-      <View style={{flex:1}}>
-        <TouchableHighlight
+      <View style={[{borderColor: '#565d61'}, this.borderStyle]}>
+        <TouchableOpacity
           onPress={this.onPress}
-          underlayColor='#b63bbf'>
+          activeOpacity={0.5}
+          style={{backgroundColor: '#3d4042', width: 51, height: 42}}>
           <Text style={styles.item}>
-            {this.props.title}
+            {this.props.order}
           </Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+}
+
+class ItemContainer extends Component {
+  render() {
+    return (
+      <View style={styles.itemContainer}>
+        <View>
+          <Text style={styles.itemsTitle}>Items</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Item order={1} />
+          <Item order={2} />
+          <Item order={3} />
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Item order={4} />
+          <Item order={5} />
+          <Item order={6} />
+        </View>
       </View>
     )
   }
@@ -194,32 +322,8 @@ class Usables extends Component {
   render() {
     return (
       <View style={styles.usables}>
-        <View style={styles.spellContainer}>
-          <View style={{marginBottom: 14}}>
-            <Text style={styles.spellsTitle}>Spells</Text>
-          </View>
-          <View style={{flexDirection: 'row'}}>
-            <Spell title={"A"} />
-            <Spell title={"B"} />
-            <Spell title={"C"} />
-            <Spell title={"D"} />
-          </View>
-        </View>
-        <View style={styles.itemContainer}>
-          <View>
-            <Text style={styles.itemsTitle}>Items</Text>
-          </View>
-          <View style={{flexDirection: 'row'}}>
-            <Item title={"1"} />
-            <Item title={"2"} />
-            <Item title={"3"} />
-          </View>
-          <View style={{flexDirection: 'row'}}>
-            <Item title={"4"} />
-            <Item title={"5"} />
-            <Item title={"6"} />
-          </View>
-        </View>
+        <SpellContainer />
+        <ItemContainer />
       </View>
     )
   }
@@ -230,9 +334,9 @@ class Character extends Component {
     return (
       <View style={styles.characterContainer}>
         <View style={styles.levelContainer}>
-          <ProgressCircle radius={35}
+          <ProgressCircle radius={35} borderWidth={5}
             percent={this.props.currEXP/this.props.maxEXP*100}
-            borderWidth={5} color={"#dfc488"}>
+            bgcolor={"#3d3d3d"} color={"#dfc488"} innerColor={"#282B31"}>
             <Text style={styles.levelText}>
              {this.props.level}
             </Text>
@@ -243,24 +347,32 @@ class Character extends Component {
             <Text style={styles.charBarTag}>
               HP:
             </Text>
-            <Slider trackStyle={{height: 30}} style={{flex: 2}} disabled={true}
+            <Slider trackStyle={{height: 30, borderWidth: 1, borderColor: 'black'}}
+              style={{flex: 2}} disabled={true}
               maximumValue={this.props.maxHP} value={this.props.currHP}
               minimumTrackTintColor={'#64ae48'} thumbStyle={{width:0, height: 0}}
             />
           <Text style={styles.charBarNum}>
             {this.props.currHP}/{this.props.maxHP}
           </Text>
+          <Text style={styles.charBarRegen}>
+            {this.props.hpRegen >= 0 ? '+' : '-'}{this.props.hpRegen}
+          </Text>
           </View>
           <View style={styles.charBar}>
             <Text style={styles.charBarTag}>
               Mana:
             </Text>
-            <Slider trackStyle={{height: 30}} style={{flex: 2}} disabled={true}
+            <Slider trackStyle={{height: 30, borderWidth: 1, borderColor: 'black'}}
+              style={{flex: 2}} disabled={true}
               maximumValue={this.props.maxMana} value={this.props.currMana}
               minimumTrackTintColor={'#508adc'} thumbStyle={{width:0, height: 0}}
             />
-          <Text style={styles.charBarNum}>
+            <Text style={styles.charBarNum}>
               {this.props.currMana}/{this.props.maxMana}
+            </Text>
+            <Text style={styles.charBarRegen}>
+              {this.props.hpRegen >= 0 ? '+' : '-'}{this.props.manaRegen}
             </Text>
           </View>
         </View>
@@ -269,7 +381,7 @@ class Character extends Component {
   }
 }
 
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -282,10 +394,12 @@ export default class App extends Component {
       level: 1,
       maxEXP: 400,
       currEXP: 0,
-      maxHP: 100,
-      currHP: 56,
-      maxMana: 100,
-      currMana: 90
+      maxHP: 650,
+      currHP: 618,
+      hpRegen: 1.2,
+      maxMana: 280,
+      currMana: 280,
+      manaRegen: 0.7
     }
   }
 
@@ -346,6 +460,7 @@ export default class App extends Component {
           maxEXP={this.state.maxEXP} currEXP={this.state.currEXP}
           maxHP={this.state.maxHP} currHP={this.state.currHP}
           maxMana={this.state.maxMana} currMana={this.state.currMana}
+          hpRegen={this.state.hpRegen} manaRegen={this.state.manaRegen}
         />
       </View>
     )
@@ -354,7 +469,7 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#7d7d7d',
+    backgroundColor: '#5a5a5a',
     flex: 1,
     alignItems: 'center',
   },
@@ -362,7 +477,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontFamily: 'Asimov',
     fontSize: 32,
-    color: '#ffffff',
+    color: 'white',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
   },
   statsBar: {
     marginBottom: 5,
@@ -376,6 +493,8 @@ const styles = StyleSheet.create({
   stat: {
     fontFamily: "Asimov",
     color: '#ffffff',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
     fontSize: 16,
     padding: 6,
     textAlign: 'center'
@@ -387,24 +506,29 @@ const styles = StyleSheet.create({
   },
   menuItem: {
     flex:1,
-    backgroundColor: 'green',
-    marginHorizontal: 2
+    backgroundColor: '#629632',
+    marginHorizontal: 2,
+    borderWidth: 2,
+    borderColor: '#488214'
   },
   menuItemText: {
     fontFamily: 'Asimov',
     color: 'white',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
     padding: 10,
     fontSize: 18,
     textAlign: 'center'
   },
   enemy: {
     alignSelf: 'stretch',
-    marginBottom: 5
   },
   enemyType: {
     textAlign: 'center',
     fontFamily: 'Asimov',
     color: 'white',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
     fontSize: 14,
     marginBottom: 2
   },
@@ -412,60 +536,65 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 20
+    marginHorizontal: 30
   },
   enemyHPTag: {
     fontFamily: 'Asimov',
-    fontSize: 12,
+    fontSize: 14,
+    color: 'white',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
     marginRight: 5,
     flex: 1
   },
   enemyHPNum: {
     fontFamily: 'Asimov',
     fontSize: 12,
-    textAlign: 'center',
-    flex: 1
+    color: 'white',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
+    position: 'absolute',
+    right: 85
   },
   usables: {
-    marginBottom: 10,
+    marginTop: -5,
+    marginBottom: 5,
     marginHorizontal: 15,
     flexDirection: 'row'
   },
   spellContainer: {
-    flex: 1,
-    borderWidth: 2,
-    borderColor: '#6c1977',
+    flex: 9,
     marginRight: 3
   },
   spellsTitle: {
     fontFamily: 'Asimov',
     color: 'white',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
+    textDecorationLine: 'underline',
     fontSize: 22,
     textAlign: 'center'
   },
   spell: {
     fontFamily: 'Asimov',
-    fontSize: 30,
-    color: 'white',
-    textAlign: 'center'
+    color: 'white'
   },
   itemContainer: {
-    flex: 1,
-    borderWidth: 2,
-    borderColor: '#6c1977',
+    flex: 11,
     marginLeft: 3
   },
   itemsTitle: {
     fontFamily: 'Asimov',
     color: 'white',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
+    textDecorationLine: 'underline',
     fontSize: 22,
     textAlign: 'center'
   },
   item: {
     fontFamily: 'Asimov',
-    fontSize: 28,
-    color: 'white',
-    textAlign: 'center'
+    color: 'white'
   },
   characterContainer: {
     flexDirection: 'row',
@@ -478,7 +607,11 @@ const styles = StyleSheet.create({
   },
   levelText: {
     fontFamily: 'Asimov',
-    fontSize: 32
+    fontSize: 32,
+    color: '#dfc488',
+    textShadowColor: '#c8b07a',
+    textShadowOffset: {width: -1, height: 0},
+    textShadowRadius: 30
   },
   hmContainer: {
     flex: 6,
@@ -492,13 +625,28 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: 'Asimov',
     fontSize: 22,
+    color: 'white',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
     textAlign: 'right',
     marginRight: 5
   },
   charBarNum: {
     fontFamily: 'Asimov',
+    fontSize: 18,
     color: 'white',
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1, height: 1},
     position: 'absolute',
-    right: 5
+    right: 56
+  },
+  charBarRegen: {
+    fontFamily: 'Asimov',
+    fontSize: 10,
+    color: '#323232',
+    position: 'absolute',
+    right: 4
   },
 });
+
+export default App;

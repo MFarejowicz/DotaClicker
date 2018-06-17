@@ -253,6 +253,15 @@ export default class Slider extends PureComponent {
       ...valueVisibleStyle
     };
 
+    var innerTrackStyle = {
+      height: 30,
+      borderLeftWidth: 1,
+      borderTopWidth: 1,
+      borderBottomWidth: 1,
+      borderRightWidth: this.props.value == this.props.maximumValue ? 1 : 0,
+      borderColor: 'black'
+    }
+
     var touchOverflowStyle = this._getTouchOverflowStyle();
 
     return (
@@ -263,7 +272,7 @@ export default class Slider extends PureComponent {
           onLayout={this._measureTrack} />
         <Animated.View
           renderToHardwareTextureAndroid={true}
-          style={[mainStyles.track, trackStyle, minimumTrackStyle]} />
+          style={[mainStyles.track, innerTrackStyle, minimumTrackStyle]} />
         <Animated.View
           onLayout={this._measureThumb}
           renderToHardwareTextureAndroid={true}
