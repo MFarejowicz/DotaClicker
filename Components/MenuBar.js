@@ -7,14 +7,11 @@ import {
 } from 'react-native';
 
 class MenuItem extends Component {
-  onPress = () => {
-    console.log(this.props.title);
-  }
 
   render() {
     return (
       <TouchableOpacity
-        onPress={this.onPress}
+        onPress={this.props.handlePress}
         activeOpacity={0.5}
         style={styles.menuItem}>
         <Text
@@ -30,9 +27,9 @@ class MenuBar extends Component {
   render() {
     return (
       <View style={styles.menuBar}>
-        <MenuItem title={"Barracks"}/>
-        <MenuItem title={"Shop"}/>
-        <MenuItem title={"Skilltree"}/>
+        <MenuItem title={"Shop"} handlePress={this.props.openShop} />
+        <MenuItem title={"Skilltree"} handlePress={this.props.openSkilltree}/>
+        <MenuItem title={"Barracks"} handlePress={this.props.openBarracks}/>
       </View>
     )
   }
@@ -46,10 +43,13 @@ const styles = StyleSheet.create({
   },
   menuItem: {
     flex:1,
-    backgroundColor: '#629632',
+    backgroundColor: '#476453',
     marginHorizontal: 2,
     borderWidth: 2,
-    borderColor: '#488214'
+    borderLeftColor: '#456D52',
+    borderTopColor: '#456D52',
+    borderRightColor: '#202C27',
+    borderBottomColor: '#202C27'
   },
   menuItemText: {
     fontFamily: 'Asimov',

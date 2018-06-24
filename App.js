@@ -1,15 +1,12 @@
 /** Dota Clicker, 2018, Matt Farejowicz */
 
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { GameLoop } from 'react-native-game-engine';
+import { StyleSheet, Text, View } from 'react-native';
+// import { GameLoop } from 'react-native-game-engine';
 import Modal from 'react-native-modal';
 import StatsBar from './components/StatsBar.js';
 import MenuBar from './components/MenuBar.js';
+import Barracks from './components/Barracks.js';
 import Enemy from './components/Enemy.js';
 import Usables from './components/Usables.js';
 import Character from './components/Character.js';
@@ -46,7 +43,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      gold: 650,
+      gold: 600,
       damage: 47,
       cs: 0,
       enemyType: "Dire Creep",
@@ -56,32 +53,63 @@ class App extends Component {
       maxEXP: 400,
       currEXP: 0,
       maxHP: 650,
-      currHP: 112,
-      hpRegen: .1,
+      currHP: 650,
+      hpRegen: 2.3,
       maxMana: 280,
       currMana: 280,
-      manaRegen: 0.7
+      manaRegen: 0.9,
+      isShopVisible: false,
+      isSkilltreeVisible: false,
+      isBarracksVisible: false,
     }
   }
 
-  tick() {
-    let newHP = this.state.currHP + this.state.hpRegen;
+  componentDidMount() {
+    this.intervalID = setInterval(() => this.tick(), 20);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
+
+  tick = () => {
+    // A tick happens every 1/50th of a second, so any per second stats need
+    // to be divided by 50 to be accurate.
+    let newHP = this.state.currHP + (this.state.hpRegen/50);
     if (newHP > this.state.maxHP) {
       newHP = this.state.maxHP;
     }
-    let newMana = this.state.currMana + this.state.manaRegen;
+    let newMana = this.state.currMana + (this.state.manaRegen/50);
     if (newMana > this.state.maxMana) {
       newMana = this.state.maxMana;
     }
+    let newEnemyHealth = this.state.enemyHealth - (this.state.cs/50);
+    this.handleEnemyHealth(newEnemyHealth);
+
     this.setState({
       currHP: newHP,
       currMana: newMana
     });
   }
 
-  handleEnemyPress() {
-    var newEnemyHealth = this.state.enemyHealth - this.state.damage;
+  toggleShop = () => {
+    this.setState({ isShopVisible: !this.state.isShopVisible });
+  }
 
+  toggleSkilltree = () => {
+    this.setState({ isSkilltreeVisible: !this.state.isSkilltreeVisible });
+  }
+
+  toggleBarracks = () => {
+    this.setState({ isBarracksVisible: !this.state.isBarracksVisible });
+  }
+
+  handleEnemyPress = () => {
+    var newEnemyHealth = this.state.enemyHealth - this.state.damage;
+    this.handleEnemyHealth(newEnemyHealth);
+  }
+
+  handleEnemyHealth = (newEnemyHealth) => {
     if (newEnemyHealth > 0) { // Enemy still alive after tap
       this.setState({enemyHealth: newEnemyHealth});
     } else { // Enemy dead after tap
@@ -115,7 +143,7 @@ class App extends Component {
 
   render() {
     return (
-      <GameLoop style={styles.container} onUpdate={this.tick.bind(this)}>
+      <View style={styles.container}>
         <Text style={styles.heading}>
           Dota Clicker
         </Text>
@@ -124,12 +152,20 @@ class App extends Component {
           damage={this.state.damage}
           cs={this.state.cs}
         />
-        <MenuBar />
+      <MenuBar
+        openShop={this.toggleShop}
+        openSkilltree={this.toggleSkilltree}
+        openBarracks={this.toggleBarracks}/>
+        <Modal isVisible={this.state.isBarracksVisible}
+          backdropColor="#d3d3d3" backdropOpacity={1}>
+          <Barracks handleClose={this.toggleBarracks}
+            gold={this.state.gold} cs={this.state.cs}/>
+        </Modal>
         <Enemy
           type={this.state.enemyType}
           maxHealth={this.state.enemyMaxHealth}
           health={this.state.enemyHealth}
-          handlePress={this.handleEnemyPress.bind(this)}
+          handlePress={this.handleEnemyPress}
         />
         <Usables />
         <Character level={this.state.level}
@@ -138,7 +174,7 @@ class App extends Component {
           maxMana={this.state.maxMana} currMana={this.state.currMana}
           hpRegen={this.state.hpRegen} manaRegen={this.state.manaRegen}
         />
-    </GameLoop>
+    </View>
     )
   }
 }

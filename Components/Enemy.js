@@ -30,6 +30,11 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function round(value) {
+  // Rounds a number to 2 decimal points.
+  return parseFloat(value.toFixed(2));
+}
+
 class Enemy extends Component {
 
   handlePress = () => {
@@ -62,7 +67,7 @@ class Enemy extends Component {
       <View style={styles.enemy}>
         <Text style={styles.enemyType}>Current enemy: {this.props.type}</Text>
         <TouchableOpacity
-          onPress={this.handlePress}
+          onPressIn={this.handlePress}
           activeOpacity={0.5}
           style={{alignSelf: 'stretch', alignItems: 'center'}}>
             <Animatable.Image
@@ -85,7 +90,7 @@ class Enemy extends Component {
             minimumTrackTintColor={'#72130c'} thumbStyle={{width:0, height: 0}}
           />
           <Text style={styles.enemyHPNum}>
-            {this.props.health}/{this.props.maxHealth}
+            {Math.round(this.props.health)}/{this.props.maxHealth}
           </Text>
         </View>
       </View>
