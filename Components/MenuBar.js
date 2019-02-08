@@ -43,13 +43,13 @@ const styles = StyleSheet.create({
   },
   menuItem: {
     flex:1,
-    backgroundColor: '#476453',
+    backgroundColor: '#629632',
     marginHorizontal: 2,
     borderWidth: 2,
-    borderLeftColor: '#456D52',
-    borderTopColor: '#456D52',
-    borderRightColor: '#202C27',
-    borderBottomColor: '#202C27'
+    borderLeftColor: '#488214',
+    borderTopColor: '#488214',
+    borderRightColor: '#476453',
+    borderBottomColor: '#476453'
   },
   menuItemText: {
     fontFamily: 'Asimov',

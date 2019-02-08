@@ -61,6 +61,7 @@ class App extends Component {
       isShopVisible: false,
       isSkilltreeVisible: false,
       isBarracksVisible: false,
+      troops: {}
     }
   }
 
@@ -102,6 +103,20 @@ class App extends Component {
 
   toggleBarracks = () => {
     this.setState({ isBarracksVisible: !this.state.isBarracksVisible });
+  }
+
+  handleRecruit = (code, cs, cost) => {
+    let newTroops = Object.assign({}, this.state.troops);
+    if (newTroops[code]) {
+      newTroops[code] += 1;
+    } else {
+      newTroops[code] = 1;
+    }
+    this.setState({
+      gold: this.state.gold - cost,
+      cs: this.state.cs + cs,
+      troops: newTroops
+    });
   }
 
   handleEnemyPress = () => {
@@ -159,7 +174,8 @@ class App extends Component {
         <Modal isVisible={this.state.isBarracksVisible}
           backdropColor="#d3d3d3" backdropOpacity={1}>
           <Barracks handleClose={this.toggleBarracks}
-            gold={this.state.gold} cs={this.state.cs}/>
+            gold={this.state.gold} cs={this.state.cs}
+            troops={this.state.troops} handleRecruit={this.handleRecruit}/>
         </Modal>
         <Enemy
           type={this.state.enemyType}

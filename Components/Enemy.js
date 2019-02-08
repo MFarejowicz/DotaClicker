@@ -76,7 +76,7 @@ class Enemy extends Component {
               duration={3000}
               iterationCount={"infinite"}
               source={require('../assets/img/creep.png')}
-              style={{width: 225, height: 240}}
+              style={{width: 240, height: 240}}
               resizeMode={'stretch'}
             />
         </TouchableOpacity>
